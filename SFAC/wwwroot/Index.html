@@ -1,0 +1,34 @@
+﻿using Microsoft.AspNetCore.SignalR.Client;
+
+var connection = new HubConnectionBuilder()
+    .WithUrl("http://localhost:5000/signalrHub")
+    .Build();
+
+connection.StartAsync().ContinueWith(task =>
+{
+    if (task.IsFaulted)
+    {
+        Console.WriteLine($"Ошибка при подключении: {task.Exception.GetBaseException()}");
+    }
+    else
+    {
+        Console.WriteLine("Подключение установлено");
+
+        connection.InvokeAsync<List<string>>("getUsers").ContinueWith(usersTask =>
+        {
+            if (usersTask.IsFaulted)
+            {
+                Console.WriteLine($"Ошибка при получении списка пользователей: {usersTask.Exception.GetBaseException()}");
+            }
+            else
+            {
+                List<string> users = usersTask.Result;
+                Console.WriteLine($"Список пользователей: {string.Join(", ", users)}");
+            }
+
+            connection.StopAsync();
+        });
+    }
+});
+
+Console.ReadLine();

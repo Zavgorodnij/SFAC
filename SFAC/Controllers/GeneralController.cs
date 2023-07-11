@@ -35,7 +35,7 @@ namespace SFAC.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Connect_Room(string Code)
+        public async Task<IActionResult> Connect_Room(int Code)
         {
             return View();
         }
